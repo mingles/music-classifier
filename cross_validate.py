@@ -37,6 +37,10 @@ class CrossValidate():
                         training_set.append(features[j][k])
                         training_classes.append(classes[j][k])
 
+            if classifier == "gaussian":
+                # fit gaussian model to test data
+                print "g"
+
             # classifying the test_set against the training_set
             for x in range(len(test_set)):
                 test_val = test_set[x]
@@ -44,8 +48,11 @@ class CrossValidate():
                 classified_class = [[-1]]
                 # create classifier
                 if len(classifier) > 1 and classifier[0] == "knn":
-                    k = knn.Knn(classifier[1], test_val, training_set, training_classes)
+                    k = knn.Classify(classifier[1], test_val, training_set, training_classes)
                     classified_class = k.get_nn()
+                elif classifier == "gaussian":
+                    print "g"
+                    quit()
                 else:
                     print "Invalid Classifier Input"
                     quit()
@@ -62,6 +69,7 @@ class CrossValidate():
 
 
 def main():
+    CrossValidate("gaussian")
     CrossValidate(("knn", 1))
 
 if __name__ == '__main__':

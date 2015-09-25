@@ -45,8 +45,8 @@ class CrossValidate():
 
                 # create classifier
                 if len(classifier) > 1 and classifier[0] == "knn":
-                    k = knn.Knn(classifier[1], test_val, training_set, training_classes)
-                    classified_class = k.get_nn()
+                    knn = knn.Classify(classifier[1], test_val, training_set, training_classes)
+                    classified_class = knn.get_nn()
                 else:
                     print "Invalid Classifier Input"
                     quit()

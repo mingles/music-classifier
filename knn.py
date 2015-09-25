@@ -3,7 +3,7 @@ __author__ = 'mingles'
 import numpy as np
 
 
-class Knn():
+class Classify():
 
     def __init__(self, k, test_val, training_set, training_classes):
         self.k = k
