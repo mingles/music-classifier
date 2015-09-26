@@ -57,36 +57,52 @@ class Classify():
             mu = np.array(self.means[i])
             d = len(test_point)
             cov = self.cov_matrices[i]
-            det = lin.det(2**19*cov)
-            det = 1
-            # normals = []
-            # for p in (self.cov_matrices):
-            #     newdet = lin.det(2**19*p)
-            #     print newdet
-            #     normals.append(newdet)
-            #
-            # normals = norm(normals)
 
-            # print (lin.det(self.cov_matrices[i]*10000000))
-            # print det
+            cov = cov.tolist()
+            for i in range(len(cov)):
+                for j in range(len(cov[i])):
+                    if i != j:
+                        cov[i][j] = 0
+
+            cov = np.matrix(cov)
+            det = lin.det(cov)
+
+            # part1 = -(x.size/2)*np.log(2*math.pi) - (x.size/2)*np.log(lin.det(cov))
+            # part2 = 0.5 * ((x-mu) * (x-mu).T) * lin.inv(cov)
+            # print part1 - part2
+
             k = x.shape[0]
             part1 = np.exp(-0.5*k*np.log(2*np.pi))
             part2 = (det ** -0.5)
             dev = x-mu
-            # print -0.5*np.dot(np.dot(dev.transpose(),np.linalg.inv(cov)), dev)/10000
             part3 = np.exp(-0.5*np.dot(np.dot(dev.transpose(),np.linalg.inv(cov)), dev))
-            dmvnorm = part1*part2*part3
-
-            print dmvnorm
-
+            dmvnorm = (part1*part2*part3)
 
             # eq1 = 1/(2 * math.pi ** (d / 2))
             # eq2 = det ** -0.5
             # eq3 = np.exp((- 0.5 * (x - mu).T * lin.inv(cov) * (x - mu)))
             # print eq3
-            probabilities.append(x)
+            probabilities.append(np.matrix(dmvnorm).tolist()[0][0])
 
-        return probabilities
+        over = 0
+        for i in range(len(probabilities)):
+            over = over + (0.1 * probabilities[i])
+
+        if over == 0:
+            over = 0.00000000000000000001
+
+        bayes = []
+        for i in range(len(probabilities)):
+            bayes.append(probabilities[i] * 0.1 / over)
+
+        max_prob = bayes[0]
+        max_index = 0
+        for i in range(len(bayes)):
+            if bayes[i] > max_prob:
+                max_prob = bayes[i]
+                max_index = i
+
+        return max_index + 1
 
 
 def main():

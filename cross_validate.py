@@ -54,8 +54,7 @@ class CrossValidate():
                     classified_class = k.get_nn()
                 elif classifier == "gaussian":
                     # g.gaussian.classify.get_class(test_val)
-                    g.get_class(test_val)
-                    quit()
+                    classified_class = g.get_class(test_val)
                 else:
                     print "Invalid Classifier Input"
                     quit()
