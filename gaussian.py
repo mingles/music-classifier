@@ -3,6 +3,9 @@ __author__ = 'mingles'
 import numpy as np
 import numpy.linalg as lin
 import math
+import scipy
+
+from scipy.stats import *
 
 class Classify():
 
@@ -37,7 +40,7 @@ class Classify():
     def get_cov_matrices(self):
         cov_matricies = []
         for x in self.training_set_by_class:
-            cov_matricies.append(np.cov(np.transpose(x)))
+            cov_matricies.append(np.cov(np.array(x).T))
         return cov_matricies
 
     def gaussian(self):
@@ -48,36 +51,40 @@ class Classify():
 
     def get_class(self, test_point):
         probabilities = []
-        for i in range(0,3):#len(self.means)):
+        for i in range(0,10):#len(self.means)):
 
             x = np.array(test_point)
             mu = np.array(self.means[i])
             d = len(test_point)
             cov = self.cov_matrices[i]
-            det = lin.det(cov)
-
-            # print x
-            # print mu
-            # print cov
-            # print cov
-            # print (lin.inv(cov))
-
-            # ll = (-d/2)*np.log(cov**2)
-
-
-            # if det != 0.0:
+            det = lin.det(2**19*cov)
+            det = 1
+            # normals = []
+            # for p in (self.cov_matrices):
+            #     newdet = lin.det(2**19*p)
+            #     print newdet
+            #     normals.append(newdet)
             #
-            #     eq1 = 1/(2 * math.pi ** (d / 2))
-            #     eq2 = det ** -0.5
-            #     eq3 = math.exp(-0.5 * (x - d) * (lin.inv(cov)) * lin.transpose(x - mu))
-            #     probabilities.append((eq1*eq2*eq3))
-            #
-            # else:
-            #     probabilities.append(0.0)
+            # normals = norm(normals)
+
+            # print (lin.det(self.cov_matrices[i]*10000000))
+            # print det
+            k = x.shape[0]
+            part1 = np.exp(-0.5*k*np.log(2*np.pi))
+            part2 = (det ** -0.5)
+            dev = x-mu
+            # print -0.5*np.dot(np.dot(dev.transpose(),np.linalg.inv(cov)), dev)/10000
+            part3 = np.exp(-0.5*np.dot(np.dot(dev.transpose(),np.linalg.inv(cov)), dev))
+            dmvnorm = part1*part2*part3
+
+            print dmvnorm
 
 
-
-
+            # eq1 = 1/(2 * math.pi ** (d / 2))
+            # eq2 = det ** -0.5
+            # eq3 = np.exp((- 0.5 * (x - mu).T * lin.inv(cov) * (x - mu)))
+            # print eq3
+            probabilities.append(x)
 
         return probabilities
 
@@ -90,7 +97,7 @@ def main():
 
 
     c = Classify(training_set, training_classes)
-    print c.get_class(test_point)
+    # c.get_class(test_point)
 
 
 if __name__ == '__main__':

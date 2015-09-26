@@ -1,6 +1,7 @@
 __author__ = 'mingles'
 import scipy.io
 import knn
+import gaussian
 
 
 class CrossValidate():
@@ -37,9 +38,10 @@ class CrossValidate():
                         training_set.append(features[j][k])
                         training_classes.append(classes[j][k])
 
+
             if classifier == "gaussian":
-                # fit gaussian model to test data
-                print "g"
+                g = gaussian.Classify(training_set, training_classes)
+                print "Gaussian Classifier Initialised"
 
             # classifying the test_set against the training_set
             for x in range(len(test_set)):
@@ -51,7 +53,8 @@ class CrossValidate():
                     k = knn.Classify(classifier[1], test_val, training_set, training_classes)
                     classified_class = k.get_nn()
                 elif classifier == "gaussian":
-                    print "g"
+                    # g.gaussian.classify.get_class(test_val)
+                    g.get_class(test_val)
                     quit()
                 else:
                     print "Invalid Classifier Input"
@@ -69,8 +72,8 @@ class CrossValidate():
 
 
 def main():
-    CrossValidate("gaussian")
-    CrossValidate(("knn", 1))
+    c = CrossValidate("gaussian")
+    # CrossValidate(("knn", 1))
 
 if __name__ == '__main__':
     main()
